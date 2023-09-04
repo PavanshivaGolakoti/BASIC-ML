@@ -1,0 +1,29 @@
+from behave import given, when, then
+
+@given('the customer is on the product page')
+def step_given_customer_on_product_page(context):
+    # Simulate navigating to the product page
+    context.product_page = {}  # You can set up necessary data or objects here
+
+@when('the customer adds "{quantity}" "{item}" to the cart')
+def step_when_customer_adds_item_to_cart(context, quantity, item):
+    # Simulate adding items to the cart
+    if 'cart' not in context:
+        context.cart = {}
+    if item in context.cart:
+        context.cart[item] += int(quantity)
+    else:
+        context.cart[item] = int(quantity)
+
+@then('the cart should contain "{expected_quantity}" items')
+def step_then_cart_should_contain_items(context, expected_quantity):
+    # Verify the cart contains the expected number of items
+    actual_quantity = sum(context.cart.values())
+    assert actual_quantity == int(expected_quantity), f"Expected {expected_quantity} items, but got {actual_quantity}"
+
+@then('the cart total should be "{expected_total}"')
+def step_then_cart_total_should_be(context, expected_total):
+    # Simulate getting the cart total and verify it matches the expected total
+    item_prices = {'Apples': 2.00, 'Banana': 1.00}  # Replace with actual item prices
+    total = sum(context.cart[item] * item_prices[item] for item in context.cart)
+    assert total == float(expected_total[1:]), f"Expected total {expected_total}, but got ${total:.2f}"
